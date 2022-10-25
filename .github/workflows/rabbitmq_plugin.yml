@@ -1,0 +1,25 @@
+name: Test install RabbitMQ
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:      
+      rabbitmq:
+        image: thinhsan/mq-delayed-exchange
+        ports:
+          - 5672:5672
+        env:
+          RABBITMQ_DEFAULT_USER: testuser
+          RABBITMQ_DEFAULT_PASS: testpass
+        options: --health-cmd="rabbitmq-diagnostics -q ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
+
+    - uses: actions/checkout@v3
+
+    - name: Check plugins
+      run: docker exec rabbitmq rabbitmq-plugins list
